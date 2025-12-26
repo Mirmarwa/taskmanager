@@ -42,8 +42,6 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
-    use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
 {
