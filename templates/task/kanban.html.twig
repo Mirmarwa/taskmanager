@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kanban{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Kanban Board</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <h5 class="text-center">À faire</h5>
+        <div class="card mb-2">
+            <div class="card-body">Task 1</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <h5 class="text-center">En cours</h5>
+        <div class="card mb-2">
+            <div class="card-body">Task 2</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <h5 class="text-center">Terminé</h5>
+        <div class="card mb-2">
+            <div class="card-body">Task 3</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

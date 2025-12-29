@@ -5,11 +5,32 @@
 {% block body %}
 <h1 class="mb-4">Dashboard</h1>
 
-<ul>
-    <li>À faire : {{ todo }}</li>
-    <li>En cours : {{ doing }}</li>
-    <li>Terminé : {{ done }}</li>
-</ul>
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">À faire</h5>
+                <p class="card-text fs-3">{{ todo }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">En cours</h5>
+                <p class="card-text fs-3">{{ doing }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Terminé</h5>
+                <p class="card-text fs-3">{{ done }}</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% if todo + doing + done > 0 %}
     <div id="chart_div" style="width:100%; height:400px;"></div>
@@ -17,30 +38,4 @@
     <p class="text-muted">Aucune tâche pour le moment</p>
 {% endif %}
 
-{% endblock %}
-
-{% block javascripts %}
-<script src="https://www.gstatic.com/charts/loader.js"></script>
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-    var data = google.visualization.arrayToDataTable([
-        ['Statut', 'Tâches'],
-        ['À faire', {{ todo }}],
-        ['En cours', {{ doing }}],
-        ['Terminé', {{ done }}]
-    ]);
-
-    var options = {
-        title: 'Répartition des tâches'
-    };
-
-    var chart = new google.visualization.PieChart(
-        document.getElementById('chart_div')
-    );
-    chart.draw(data, options);
-}
-</script>
 {% endblock %}
