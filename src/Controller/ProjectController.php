@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Project;
+use App\Entity\User; // Ajouté pour $user
+use App\Form\AddMemberType;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/project')]
 final class ProjectController extends AbstractController
 {
-    #[Route(name: 'app_project_index', methods: ['GET'])]
+    #[Route('', name: 'app_project_index', methods: ['GET'])]
     public function index(ProjectRepository $projectRepository): Response
     {
         return $this->render('project/index.html.twig', [
@@ -33,12 +35,14 @@ final class ProjectController extends AbstractController
             $entityManager->persist($project);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Projet créé avec succès !');
+
+            return $this->redirectToRoute('app_project_index');
         }
 
         return $this->render('project/new.html.twig', [
             'project' => $project,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -59,23 +63,66 @@ final class ProjectController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Projet modifié avec succès !');
+
+            return $this->redirectToRoute('app_project_index');
         }
 
         return $this->render('project/edit.html.twig', [
             'project' => $project,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_project_delete', methods: ['POST'])]
     public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$project->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->request->get('_token'))) {
             $entityManager->remove($project);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Projet supprimé avec succès.');
         }
 
-        return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_project_index');
+    }
+
+    #[Route('/{id}/add-member', name: 'app_project_add_member', methods: ['GET', 'POST'])]
+    public function addMember(Request $request, Project $project, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(AddMemberType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->get('user')->getData();
+
+            // Vérifie si déjà membre sans getUsers()
+            $exists = $em->createQueryBuilder()
+                ->select('COUNT(u.id)')
+                ->from(User::class, 'u')
+                ->innerJoin('u.projects', 'p') // Assure-toi que la relation existe dans l'entité User
+                ->where('p.id = :projectId')
+                ->andWhere('u.id = :userId')
+                ->setParameter('projectId', $project->getId())
+                ->setParameter('userId', $user->getId())
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            if ($exists == 0) {
+                $user->addProject($project); // Utilise addProject() depuis l'entité User (relation inverse)
+                $em->flush();
+
+                $this->addFlash('success', 'Membre ajouté au projet !');
+            } else {
+                $this->addFlash('info', 'Cet utilisateur est déjà membre du projet.');
+            }
+
+            return $this->redirectToRoute('app_project_show', ['id' => $project->getId()]);
+        }
+
+        return $this->render('project/add_member.html.twig', [
+            'project' => $project,
+            'form' => $form->createView(),
+        ]);
     }
 }

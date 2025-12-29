@@ -2,27 +2,24 @@
 
 namespace App\Controller;
 
-use App\Entity\Task;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ProjectRepository;
+use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class DashboardController extends AbstractController
+#[Route('/dashboard')]
+final class DashboardController extends AbstractController
 {
-    #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(EntityManagerInterface $em): Response
+    #[Route('', name: 'app_dashboard')]
+    public function index(TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
     {
-        $taskRepo = $em->getRepository(Task::class);
-
-        $todo = count($taskRepo->findBy(['status' => 'À faire']));
-        $doing = count($taskRepo->findBy(['status' => 'En cours']));
-        $done = count($taskRepo->findBy(['status' => 'Terminé']));
+        $user = $this->getUser();
 
         return $this->render('dashboard/index.html.twig', [
-            'todo' => $todo,
-            'doing' => $doing,
-            'done' => $done,
+            'assigned_tasks' => $taskRepository->findBy(['assignee' => $user]),
+            'active_projects' => $projectRepository->findActiveForUser($user), // à implémenter ou adapter
+            'upcoming_deadlines' => $taskRepository->findUpcomingDeadlinesForUser($user),
         ]);
     }
 }
