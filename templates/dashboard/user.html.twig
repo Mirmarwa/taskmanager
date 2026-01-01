@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Mon Dashboard</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card text-bg-secondary">
+            <div class="card-body text-center">
+                <h5>À faire</h5>
+                <p class="fs-2">{{ todo }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-warning">
+            <div class="card-body text-center">
+                <h5>En cours</h5>
+                <p class="fs-2">{{ doing }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-success">
+            <div class="card-body text-center">
+                <h5>Terminées</h5>
+                <p class="fs-2">{{ done }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Mes tâches assignées</h3>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Titre</th>
+            <th>Statut</th>
+            <th>Deadline</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for task in assigned_tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.status }}</td>
+            <td>{{ task.deadline ? task.deadline|date('Y-m-d') : '-' }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3" class="text-center text-muted">
+                Aucune tâche assignée
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

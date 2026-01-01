@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Dashboard Administrateur</h1>
+
+<p class="text-muted">
+    Supervision des projets de l'application
+</p>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Projet</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for project in projects %}
+        <tr>
+            <td>{{ project.name }}</td>
+            <td>{{ project.description }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2" class="text-center text-muted">
+                Aucun projet trouvé
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

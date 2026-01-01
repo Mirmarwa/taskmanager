@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Directeur{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">Vue Globale – Direction</h1>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card text-bg-primary">
+            <div class="card-body text-center">
+                <h4>Total des projets</h4>
+                <p class="fs-1">{{ total_projects }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card text-bg-dark">
+            <div class="card-body text-center">
+                <h4>Total des tâches</h4>
+                <p class="fs-1">{{ total_tasks }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="mt-4 text-muted">
+    Cette vue permet au responsable d’avoir une vision globale sans gérer les détails.
+</p>
+{% endblock %}
