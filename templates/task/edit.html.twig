@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Task{% endblock %}
+{% block title %}Edit task{% endblock %}
 
 {% block body %}
-    <h1>Edit Task</h1>
+<h1>Edit task</h1>
 
-    {{ include('task/_form.html.twig', {'button_label': 'Update'}) }}
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary mt-3">Save</button>
+{{ form_end(form) }}
 
-    <a href="{{ path('app_task_index') }}">back to list</a>
-
-    {{ include('task/_delete_form.html.twig') }}
+<a href="{{ path('app_task_index') }}">Back to list</a>
 {% endblock %}

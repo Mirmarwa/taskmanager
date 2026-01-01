@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -36,6 +38,16 @@ class Task
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Comment::class, orphanRemoval: true)]
+    private Collection $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
+
+    // ---------- Getters / Setters ----------
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,10 +58,9 @@ class Task
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -58,10 +69,9 @@ class Task
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -70,10 +80,9 @@ class Task
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(string $status): self
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -82,10 +91,9 @@ class Task
         return $this->priority;
     }
 
-    public function setPriority(int $priority): static
+    public function setPriority(int $priority): self
     {
         $this->priority = $priority;
-
         return $this;
     }
 
@@ -94,10 +102,9 @@ class Task
         return $this->deadline;
     }
 
-    public function setDeadline(?\DateTime $deadline): static
+    public function setDeadline(?\DateTime $deadline): self
     {
         $this->deadline = $deadline;
-
         return $this;
     }
 
@@ -106,10 +113,9 @@ class Task
         return $this->assignedTo;
     }
 
-    public function setAssignedTo(?User $assignedTo): static
+    public function setAssignedTo(?User $assignedTo): self
     {
         $this->assignedTo = $assignedTo;
-
         return $this;
     }
 
@@ -118,9 +124,37 @@ class Task
         return $this->project;
     }
 
-    public function setProject(?Project $project): static
+    public function setProject(?Project $project): self
     {
         $this->project = $project;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setTask($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            if ($comment->getTask() === $this) {
+                $comment->setTask(null);
+            }
+        }
 
         return $this;
     }

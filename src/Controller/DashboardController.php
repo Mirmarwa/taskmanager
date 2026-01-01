@@ -11,15 +11,27 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/dashboard')]
 final class DashboardController extends AbstractController
 {
-    #[Route('', name: 'app_dashboard')]
-    public function index(TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
-    {
-        $user = $this->getUser();
+#[Route('', name: 'app_dashboard')]
+public function index(TaskRepository $taskRepository): Response
+{
+    $user = $this->getUser();
 
-        return $this->render('dashboard/index.html.twig', [
-            'assigned_tasks' => $taskRepository->findBy(['assignee' => $user]),
-            'active_projects' => $projectRepository->findActiveForUser($user), // à implémenter ou adapter
-            'upcoming_deadlines' => $taskRepository->findUpcomingDeadlinesForUser($user),
-        ]);
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
     }
+
+    $tasks = $taskRepository->findBy(['assignedTo' => $user]);
+
+    $todo = count(array_filter($tasks, fn($t) => $t->getStatus() === 'todo'));
+    $doing = count(array_filter($tasks, fn($t) => $t->getStatus() === 'doing'));
+    $done = count(array_filter($tasks, fn($t) => $t->getStatus() === 'done'));
+
+    return $this->render('dashboard/index.html.twig', [
+        'todo' => $todo,
+        'doing' => $doing,
+        'done' => $done,
+    ]);
+}
+
+
 }

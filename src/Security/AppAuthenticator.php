@@ -45,8 +45,9 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
 public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
 {
-    return new RedirectResponse($this->urlGenerator->generate('project_index'));
+    return new RedirectResponse($this->urlGenerator->generate('app_project_index'));
 }
+
 
 
     protected function getLoginUrl(Request $request): string

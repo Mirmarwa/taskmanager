@@ -6,7 +6,7 @@ use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
     #[ORM\Id]
@@ -38,10 +38,9 @@ class Comment
         return $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(string $content): self
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -50,10 +49,9 @@ class Comment
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -62,10 +60,9 @@ class Comment
         return $this->task;
     }
 
-    public function setTask(?Task $task): static
+    public function setTask(?Task $task): self
     {
         $this->task = $task;
-
         return $this;
     }
 
@@ -74,10 +71,9 @@ class Comment
         return $this->author;
     }
 
-    public function setAuthor(?User $author): static
+    public function setAuthor(?User $author): self
     {
         $this->author = $author;
-
         return $this;
     }
 }

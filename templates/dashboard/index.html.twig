@@ -7,35 +7,71 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-4">
-        <div class="card text-bg-primary">
-            <div class="card-body">
+        <div class="card text-bg-secondary">
+            <div class="card-body text-center">
                 <h5 class="card-title">À faire</h5>
-                <p class="card-text fs-3">{{ todo }}</p>
+                <p class="fs-2 fw-bold">{{ todo }}</p>
             </div>
         </div>
     </div>
+
     <div class="col-md-4">
         <div class="card text-bg-warning">
-            <div class="card-body">
+            <div class="card-body text-center">
                 <h5 class="card-title">En cours</h5>
-                <p class="card-text fs-3">{{ doing }}</p>
+                <p class="fs-2 fw-bold">{{ doing }}</p>
             </div>
         </div>
     </div>
+
     <div class="col-md-4">
         <div class="card text-bg-success">
-            <div class="card-body">
+            <div class="card-body text-center">
                 <h5 class="card-title">Terminé</h5>
-                <p class="card-text fs-3">{{ done }}</p>
+                <p class="fs-2 fw-bold">{{ done }}</p>
             </div>
         </div>
     </div>
 </div>
 
 {% if todo + doing + done > 0 %}
-    <div id="chart_div" style="width:100%; height:400px;"></div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Répartition des tâches</h5>
+            <div id="chart_div" style="width:100%; height:400px;"></div>
+        </div>
+    </div>
 {% else %}
-    <p class="text-muted">Aucune tâche pour le moment</p>
+    <p class="text-muted">Aucune tâche pour le moment.</p>
 {% endif %}
 
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Statut', 'Nombre'],
+            ['À faire', {{ todo }}],
+            ['En cours', {{ doing }}],
+            ['Terminé', {{ done }}]
+        ]);
+
+        var options = {
+            pieHole: 0.4,
+            legend: { position: 'right' }
+        };
+
+        var chart = new google.visualization.PieChart(
+            document.getElementById('chart_div')
+        );
+        chart.draw(data, options);
+    }
+</script>
 {% endblock %}
