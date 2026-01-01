@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Project;
 use App\Entity\Task;
 use App\Entity\Comment;
 use App\Form\TaskType;
@@ -38,7 +39,17 @@ final class TaskController extends AbstractController
     #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
-        $task = new Task();
+        $task = new Task(); // ✅ ON CRÉE D’ABORD LA TÂCHE
+
+$projectId = $request->query->get('project');
+
+if ($projectId) {
+    $project = $em->getRepository(Project::class)->find($projectId);
+    if ($project) {
+        $task->setProject($project);
+    }
+}
+
 
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);

@@ -45,7 +45,8 @@
             <td>{{ task.priority }}</td>
 
             <td>
-                {{ task.deadline ? task.deadline|date('Y-m-d H:i') : '-' }}
+                {{ task.deadline ? task.deadline|date('Y-m-d') : '-' }}
+
             </td>
 
             <td class="text-center">

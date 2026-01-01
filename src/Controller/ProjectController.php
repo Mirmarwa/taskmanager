@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\Task;
+
 
 #[Route('/project')]
 final class ProjectController extends AbstractController
@@ -47,12 +49,17 @@ final class ProjectController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_project_show', methods: ['GET'])]
-    public function show(Project $project): Response
-    {
-        return $this->render('project/show.html.twig', [
-            'project' => $project,
-        ]);
-    }
+public function show(Project $project, EntityManagerInterface $em): Response
+{
+    $tasks = $em->getRepository(Task::class)
+        ->findBy(['project' => $project]);
+
+    return $this->render('project/show.html.twig', [
+        'project' => $project,
+        'tasks' => $tasks,
+    ]);
+}
+
 
     #[Route('/{id}/edit', name: 'app_project_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Project $project, EntityManagerInterface $entityManager): Response
