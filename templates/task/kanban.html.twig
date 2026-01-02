@@ -3,28 +3,72 @@
 {% block title %}Kanban{% endblock %}
 
 {% block body %}
-<h1 class="mb-4">Kanban Board</h1>
+<h1 class="mb-4">Vue Kanban</h1>
 
 <div class="row">
+
+    {# À FAIRE #}
     <div class="col-md-4">
-        <h5 class="text-center">À faire</h5>
-        <div class="card mb-2">
-            <div class="card-body">Task 1</div>
+        <h4 class="text-center">À faire</h4>
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                {% for task in todo %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <strong>{{ task.title }}</strong><br>
+                            <small class="text-muted">
+                                Priorité: {{ task.priority }}
+                            </small>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Aucune tâche</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
+    {# EN COURS #}
     <div class="col-md-4">
-        <h5 class="text-center">En cours</h5>
-        <div class="card mb-2">
-            <div class="card-body">Task 2</div>
+        <h4 class="text-center">En cours</h4>
+        <div class="card bg-warning-subtle mb-3">
+            <div class="card-body">
+                {% for task in doing %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <strong>{{ task.title }}</strong><br>
+                            <small class="text-muted">
+                                Priorité: {{ task.priority }}
+                            </small>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Aucune tâche</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
+    {# TERMINÉ #}
     <div class="col-md-4">
-        <h5 class="text-center">Terminé</h5>
-        <div class="card mb-2">
-            <div class="card-body">Task 3</div>
+        <h4 class="text-center">Terminé</h4>
+        <div class="card bg-success-subtle mb-3">
+            <div class="card-body">
+                {% for task in done %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <strong>{{ task.title }}</strong><br>
+                            <small class="text-muted">
+                                Priorité: {{ task.priority }}
+                            </small>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Aucune tâche</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

@@ -3,29 +3,72 @@
 {% block title %}Dashboard Directeur{% endblock %}
 
 {% block body %}
-<h1 class="mb-4">Vue Globale – Direction</h1>
+<h1 class="mb-4">🏢 Vue Globale – Direction</h1>
 
-<div class="row g-4">
-    <div class="col-md-6">
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
         <div class="card text-bg-primary">
             <div class="card-body text-center">
-                <h4>Total des projets</h4>
-                <p class="fs-1">{{ total_projects }}</p>
+                <h5>Projets</h5>
+                <p class="display-5">{{ total_projects }}</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card text-bg-dark">
             <div class="card-body text-center">
-                <h4>Total des tâches</h4>
-                <p class="fs-1">{{ total_tasks }}</p>
+                <h5>Tâches</h5>
+                <p class="display-5">{{ total_tasks }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-bg-success">
+            <div class="card-body text-center">
+                <h5>Utilisateurs</h5>
+                <p class="display-5">{{ total_users }}</p>
             </div>
         </div>
     </div>
 </div>
 
-<p class="mt-4 text-muted">
-    Cette vue permet au responsable d’avoir une vision globale sans gérer les détails.
-</p>
+<h3 class="mt-4 mb-3">📊 Répartition des tâches</h3>
+
+<div style="max-width: 400px; margin: auto;">
+    <canvas id="tasksChart"></canvas>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const canvas = document.getElementById('tasksChart');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['À faire', 'En cours', 'Terminées'],
+            datasets: [{
+                data: [{{ todo }}, {{ doing }}, {{ done }}],
+                backgroundColor: ['#ffc107', '#0dcaf0', '#198754']
+            }]
+        },
+        options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+        legend: {
+            position: 'bottom'
+        }
+    }
+}
+
+    });
+});
+</script>
 {% endblock %}

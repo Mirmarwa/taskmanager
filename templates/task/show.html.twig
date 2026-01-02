@@ -33,6 +33,21 @@
             </tr>
         </tbody>
     </table>
+    <hr class="my-4">
+
+<h4>💬 Ajouter un commentaire</h4>
+
+{{ form_start(form, {'method': 'POST'}) }}
+
+{{ form_widget(form) }}
+
+<button class="btn btn-primary btn-sm mt-2">
+    Envoyer
+</button>
+
+{{ form_end(form) }}
+
+
 
     <a href="{{ path('app_task_index') }}">back to list</a>
 

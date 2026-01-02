@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Notification;
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -23,11 +24,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-#[Assert\NotBlank]
-#[Assert\Email(message: 'Veuillez entrer un email valide')]
-private ?string $email = null;
-
-
+    #[Assert\NotBlank]
+    #[Assert\Email(message: 'Veuillez entrer un email valide')]
+    private ?string $email = null;
     /**
      * @var list<string> The user roles
      */
@@ -45,10 +44,18 @@ private ?string $email = null;
      */
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'members')]
     private Collection $Projects;
+    /**
+ * @var Collection<int, Notification>
+ */
+#[ORM\OneToMany(mappedBy: 'recipient', targetEntity: Notification::class, orphanRemoval: true)]
+private Collection $notifications;
 
     public function __construct()
     {
         $this->Projects = new ArrayCollection();
+    $this->notifications = new ArrayCollection();
+
+
     }
 
     public function getId(): ?int
@@ -158,4 +165,32 @@ private ?string $email = null;
 
         return $this;
     }
+    /**
+ * @return Collection<int, Notification>
+ */
+public function getNotifications(): Collection
+{
+    return $this->notifications;
+}
+
+public function addNotification(Notification $notification): static
+{
+    if (!$this->notifications->contains($notification)) {
+        $this->notifications->add($notification);
+        $notification->setRecipient($this);
+    }
+
+    return $this;
+}
+
+
+    public function removeNotification(Notification $notification): static
+{
+    $this->notifications->removeElement($notification);
+    return $this;
+}
+
+
+    
+
 }

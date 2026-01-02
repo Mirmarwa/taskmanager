@@ -19,12 +19,22 @@ use App\Entity\Task;
 final class ProjectController extends AbstractController
 {
     #[Route('', name: 'app_project_index', methods: ['GET'])]
-    public function index(ProjectRepository $projectRepository): Response
-    {
-        return $this->render('project/index.html.twig', [
-            'projects' => $projectRepository->findAll(),
-        ]);
+    #[Route('', name: 'app_project_index', methods: ['GET'])]
+public function index(ProjectRepository $projectRepository): Response
+{
+    $user = $this->getUser();
+
+    if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_DIRECTOR')) {
+        $projects = $projectRepository->findAll();
+    } else {
+        $projects = $projectRepository->findByMember($user);
     }
+
+    return $this->render('project/index.html.twig', [
+        'projects' => $projects,
+    ]);
+}
+
 
     #[Route('/new', name: 'app_project_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -66,6 +76,13 @@ public function show(Project $project, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
+        if (
+    !$this->isGranted('ROLE_ADMIN') &&
+    !$project->getMembers()->contains($this->getUser())
+) {
+    throw $this->createAccessDeniedException();
+}
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
@@ -83,7 +100,13 @@ public function show(Project $project, EntityManagerInterface $em): Response
 
     #[Route('/{id}', name: 'app_project_delete', methods: ['POST'])]
     public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
-    {
+    {if (
+    !$this->isGranted('ROLE_ADMIN') &&
+    !$project->getMembers()->contains($this->getUser())
+) {
+    throw $this->createAccessDeniedException();
+}
+
         if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->request->get('_token'))) {
             $entityManager->remove($project);
             $entityManager->flush();

@@ -3,14 +3,18 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
-<h1 class="mb-4">Mon Dashboard</h1>
+<h1 class="mb-4">👤 Mon Dashboard</h1>
+
+<p class="text-muted mb-4">
+    Vue personnelle de mes tâches et de mon avancement.
+</p>
 
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card text-bg-secondary">
             <div class="card-body text-center">
-                <h5>À faire</h5>
-                <p class="fs-2">{{ todo }}</p>
+                <h6>À faire</h6>
+                <p class="display-6">{{ todo }}</p>
             </div>
         </div>
     </div>
@@ -18,8 +22,8 @@
     <div class="col-md-4">
         <div class="card text-bg-warning">
             <div class="card-body text-center">
-                <h5>En cours</h5>
-                <p class="fs-2">{{ doing }}</p>
+                <h6>En cours</h6>
+                <p class="display-6">{{ doing }}</p>
             </div>
         </div>
     </div>
@@ -27,33 +31,64 @@
     <div class="col-md-4">
         <div class="card text-bg-success">
             <div class="card-body text-center">
-                <h5>Terminées</h5>
-                <p class="fs-2">{{ done }}</p>
+                <h6>Terminées</h6>
+                <p class="display-6">{{ done }}</p>
             </div>
         </div>
     </div>
 </div>
 
-<h3>Mes tâches assignées</h3>
+<h3 class="mb-3">📋 Mes tâches assignées</h3>
 
-<table class="table table-bordered">
+<table class="table table-hover">
     <thead class="table-dark">
         <tr>
             <th>Titre</th>
             <th>Statut</th>
+            <th>Priorité</th>
             <th>Deadline</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
     {% for task in assigned_tasks %}
         <tr>
             <td>{{ task.title }}</td>
-            <td>{{ task.status }}</td>
-            <td>{{ task.deadline ? task.deadline|date('Y-m-d') : '-' }}</td>
+
+            <td>
+                {% if task.status == 'todo' %}
+                    <span class="badge bg-secondary">À faire</span>
+                {% elseif task.status == 'doing' %}
+                    <span class="badge bg-warning text-dark">En cours</span>
+                {% else %}
+                    <span class="badge bg-success">Terminée</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if task.priority == 1 %}
+                    <span class="badge bg-info">Basse</span>
+                {% elseif task.priority == 2 %}
+                    <span class="badge bg-warning text-dark">Moyenne</span>
+                {% else %}
+                    <span class="badge bg-danger">Haute</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {{ task.deadline ? task.deadline|date('Y-m-d') : '-' }}
+            </td>
+
+            <td>
+                <a href="{{ path('app_task_show', {id: task.id}) }}"
+                   class="btn btn-sm btn-outline-primary">
+                    Voir
+                </a>
+            </td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="3" class="text-center text-muted">
+            <td colspan="5" class="text-center text-muted">
                 Aucune tâche assignée
             </td>
         </tr>
