@@ -3,9 +3,25 @@
 {% block title %}New Task{% endblock %}
 
 {% block body %}
-    <h1>Create new Task</h1>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm task-form-card">
+            <div class="card-body">
 
-    {{ include('task/_form.html.twig') }}
+                <h2 class="mb-4 text-center text-primary">
+                    Create New Task
+                </h2>
 
-    <a href="{{ path('app_task_index') }}">back to list</a>
+                {{ include('task/_form.html.twig') }}
+
+                <a href="{{ path('app_task_index') }}" class="btn btn-secondary btn-lg">
+    🔙 Back to List
+</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+

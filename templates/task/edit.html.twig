@@ -1,14 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit task{% endblock %}
+{% block title %}Edit Task{% endblock %}
 
 {% block body %}
-<h1>Edit task</h1>
+<h1 class="mb-4">Edit Task</h1>
 
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-primary mt-3">Save</button>
-{{ form_end(form) }}
+<div class="task-form-card p-4 shadow-sm rounded">
+    {{ form_start(form) }}
 
-<a href="{{ path('app_task_index') }}">Back to list</a>
+    <div class="mb-3">
+        {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.status, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.priority, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.priority, {'attr': {'class': 'form-select'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.deadline, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button class="btn btn-primary btn-lg">💾 Save Task</button>
+        <a href="{{ path('app_task_index') }}" class="btn btn-secondary btn-lg">🔙 Back to List</a>
+    </div>
+
+    {{ form_end(form) }}
+</div>
 {% endblock %}
