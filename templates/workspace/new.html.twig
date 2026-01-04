@@ -5,13 +5,10 @@
 {% block body %}
 <h1>Create Workspace</h1>
 
-<form class="mt-4">
-    <div class="mb-3">
-        <label class="form-label">Workspace name</label>
-        <input type="text" class="form-control" placeholder="Enter name">
-    </div>
+{{ form_start(form) }}
+    {{ form_row(form.name) }}
+    <button class="btn btn-success">Create</button>
+{{ form_end(form) }}
 
-    <button class="btn btn-success">Save</button>
-    <a href="#" class="btn btn-secondary">Back</a>
-</form>
+<a href="{{ path('app_workspace_index') }}">Back</a>
 {% endblock %}

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Project;
-use App\Entity\User; // Ajouté pour $user
+use App\Entity\User;
 use App\Form\AddMemberType;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
@@ -18,7 +18,6 @@ use App\Entity\Task;
 #[Route('/project')]
 final class ProjectController extends AbstractController
 {
-    #[Route('', name: 'app_project_index', methods: ['GET'])]
     #[Route('', name: 'app_project_index', methods: ['GET'])]
 public function index(ProjectRepository $projectRepository): Response
 {
@@ -60,7 +59,14 @@ public function index(ProjectRepository $projectRepository): Response
 
     #[Route('/{id}', name: 'app_project_show', methods: ['GET'])]
 public function show(Project $project, EntityManagerInterface $em): Response
-{
+{if (
+    !$this->isGranted('ROLE_ADMIN') &&
+    !$this->isGranted('ROLE_DIRECTOR') &&
+    !$project->getMembers()->contains($this->getUser())
+) {
+    throw $this->createAccessDeniedException();
+}
+
     $tasks = $em->getRepository(Task::class)
         ->findBy(['project' => $project]);
 
@@ -119,18 +125,18 @@ public function show(Project $project, EntityManagerInterface $em): Response
 
     #[Route('/{id}/add-member', name: 'app_project_add_member', methods: ['GET', 'POST'])]
     public function addMember(Request $request, Project $project, EntityManagerInterface $em): Response
-    {
+    {$this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_DIRECTOR']);
         $form = $this->createForm(AddMemberType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->get('user')->getData();
 
-            // Vérifie si déjà membre sans getUsers()
+            
             $exists = $em->createQueryBuilder()
                 ->select('COUNT(u.id)')
                 ->from(User::class, 'u')
-                ->innerJoin('u.projects', 'p') // Assure-toi que la relation existe dans l'entité User
+                ->innerJoin('u.projects', 'p') 
                 ->where('p.id = :projectId')
                 ->andWhere('u.id = :userId')
                 ->setParameter('projectId', $project->getId())
@@ -139,7 +145,7 @@ public function show(Project $project, EntityManagerInterface $em): Response
                 ->getSingleScalarResult();
 
             if ($exists == 0) {
-                $user->addProject($project); // Utilise addProject() depuis l'entité User (relation inverse)
+                $user->addProject($project); 
                 $em->flush();
 
                 $this->addFlash('success', 'Membre ajouté au projet !');

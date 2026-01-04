@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\WorkspaceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: WorkspaceRepository::class)]
 class Workspace
@@ -16,7 +17,7 @@ class Workspace
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
@@ -30,10 +31,9 @@ class Workspace
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -42,10 +42,9 @@ class Workspace
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): static
+    public function setOwner(User $owner): self
     {
         $this->owner = $owner;
-
         return $this;
     }
 }

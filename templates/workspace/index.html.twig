@@ -5,6 +5,10 @@
 {% block body %}
 <h1 class="mb-4">Workspaces</h1>
 
+<a href="{{ path('app_workspace_new') }}" class="btn btn-success mb-3">
+    Create Workspace
+</a>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -14,21 +18,29 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Main Workspace</td>
-            <td>
-                <button class="btn btn-sm btn-primary">Open</button>
-                <button class="btn btn-sm btn-secondary">Edit</button>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" class="text-center text-muted">
-                No workspaces found
-            </td>
-        </tr>
+        {% for workspace in workspaces %}
+            <tr>
+                <td>{{ workspace.id }}</td>
+                <td>{{ workspace.name }}</td>
+                <td>
+                    <a href="{{ path('app_workspace_show', {id: workspace.id}) }}"
+                       class="btn btn-sm btn-primary">
+                        Open
+                    </a>
+
+                    <a href="{{ path('app_workspace_edit', {id: workspace.id}) }}"
+                       class="btn btn-sm btn-secondary">
+                        Edit
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3" class="text-center text-muted">
+                    No workspaces found
+                </td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
-
-<a href="#" class="btn btn-success">Create Workspace</a>
 {% endblock %}

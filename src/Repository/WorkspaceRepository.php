@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Workspace;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,6 +16,15 @@ class WorkspaceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Workspace::class);
     }
+    public function findByOwner(User $user): array
+{
+    return $this->createQueryBuilder('w')
+        ->andWhere('w.owner = :user')
+        ->setParameter('user', $user)
+        ->getQuery()
+        ->getResult();
+}
+
 
     //    /**
     //     * @return Workspace[] Returns an array of Workspace objects
