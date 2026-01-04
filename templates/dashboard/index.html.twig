@@ -5,41 +5,35 @@
 {% block body %}
 <h1 class="mb-4">Dashboard</h1>
 
-<div class="row g-3 mb-4">
+{# ===== STATUS CARDS ===== #}
+<div class="row g-4 mb-4">
     <div class="col-md-4">
-        <div class="card text-bg-secondary">
-            <div class="card-body text-center">
-                <h5 class="card-title">À faire</h5>
-                <p class="fs-2 fw-bold">{{ todo }}</p>
-            </div>
+        <div class="card text-center shadow-sm border-0 p-3 bg-light">
+            <h5 class="card-title text-secondary">À faire</h5>
+            <p class="fs-2 fw-bold text-primary">{{ todo }}</p>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card text-bg-warning">
-            <div class="card-body text-center">
-                <h5 class="card-title">En cours</h5>
-                <p class="fs-2 fw-bold">{{ doing }}</p>
-            </div>
+        <div class="card text-center shadow-sm border-0 p-3 bg-light">
+            <h5 class="card-title text-warning">En cours</h5>
+            <p class="fs-2 fw-bold text-warning">{{ doing }}</p>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card text-bg-success">
-            <div class="card-body text-center">
-                <h5 class="card-title">Terminé</h5>
-                <p class="fs-2 fw-bold">{{ done }}</p>
-            </div>
+        <div class="card text-center shadow-sm border-0 p-3 bg-light">
+            <h5 class="card-title text-success">Terminé</h5>
+            <p class="fs-2 fw-bold text-success">{{ done }}</p>
         </div>
     </div>
 </div>
 
+{# ===== CHART CARD ===== #}
 {% if todo + doing + done > 0 %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title mb-3">Répartition des tâches</h5>
-            <div id="chart_div" style="width:100%; height:400px;"></div>
-        </div>
+    <div class="card shadow-sm border-0 p-3 mb-4">
+        <h5 class="card-title mb-3">Répartition des tâches</h5>
+        <div id="chart_div" style="width:100%; height:400px;"></div>
     </div>
 {% else %}
     <p class="text-muted">Aucune tâche pour le moment.</p>
@@ -52,26 +46,27 @@
 
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Statut', 'Nombre'],
-            ['À faire', {{ todo }}],
-            ['En cours', {{ doing }}],
-            ['Terminé', {{ done }}]
-        ]);
+function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+        ['Statut', 'Nombre'],
+        ['À faire', {{ todo }}],
+        ['En cours', {{ doing }}],
+        ['Terminé', {{ done }}]
+    ]);
 
-        var options = {
-            pieHole: 0.4,
-            legend: { position: 'right' }
-        };
+    var options = {
+        pieHole: 0.4,
+        legend: { position: 'right' },
+        chartArea: { width: '85%', height: '80%' }
+    };
 
-        var chart = new google.visualization.PieChart(
-            document.getElementById('chart_div')
-        );
-        chart.draw(data, options);
-    }
+    var chart = new google.visualization.PieChart(
+        document.getElementById('chart_div')
+    );
+    chart.draw(data, options);
+}
 </script>
 {% endblock %}
