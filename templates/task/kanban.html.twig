@@ -3,72 +3,76 @@
 {% block title %}Kanban{% endblock %}
 
 {% block body %}
-<h1 class="mb-4">Vue Kanban</h1>
+<h1 class="mb-4 text-center">Vue Kanban</h1>
 
-<div class="row">
+<div class="kanban-board">
 
-    {# À FAIRE #}
-    <div class="col-md-4">
-        <h4 class="text-center">À faire</h4>
-        <div class="card bg-light mb-3">
-            <div class="card-body">
-                {% for task in todo %}
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <strong>{{ task.title }}</strong><br>
-                            <small class="text-muted">
-                                Priorité: {{ task.priority }}
-                            </small>
-                        </div>
-                    </div>
-                {% else %}
-                    <p class="text-muted text-center">Aucune tâche</p>
-                {% endfor %}
+    {# TO DO #}
+    <div class="kanban-column">
+        <h5 class="text-center mb-3">À faire</h5>
+        {% for task in todo %}
+            <div class="kanban-card">
+                <strong>{{ task.title }}</strong>
+                <div class="mt-1">
+                    <span class="badge 
+                        {% if task.priority == 'High' %}bg-danger
+                        {% elseif task.priority == 'Medium' %}bg-warning
+                        {% else %}bg-success{% endif %}">
+                        {{ task.priority }}
+                    </span>
+                </div>
+                <small class="text-muted d-block mt-1">Deadline: {{ task.deadline|date('d M Y') }}</small>
+                <small class="text-muted">Assigned: {{ task.assignedTo.username }}</small>
             </div>
-        </div>
+        {% else %}
+            <p class="text-muted text-center mt-2">Aucune tâche</p>
+        {% endfor %}
     </div>
 
-    {# EN COURS #}
-    <div class="col-md-4">
-        <h4 class="text-center">En cours</h4>
-        <div class="card bg-warning-subtle mb-3">
-            <div class="card-body">
-                {% for task in doing %}
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <strong>{{ task.title }}</strong><br>
-                            <small class="text-muted">
-                                Priorité: {{ task.priority }}
-                            </small>
-                        </div>
-                    </div>
-                {% else %}
-                    <p class="text-muted text-center">Aucune tâche</p>
-                {% endfor %}
+    {# DOING #}
+    <div class="kanban-column">
+        <h5 class="text-center mb-3">En cours</h5>
+        {% for task in doing %}
+            <div class="kanban-card">
+                <strong>{{ task.title }}</strong>
+                <div class="mt-1">
+                    <span class="badge 
+                        {% if task.priority == 'High' %}bg-danger
+                        {% elseif task.priority == 'Medium' %}bg-warning
+                        {% else %}bg-success{% endif %}">
+                        {{ task.priority }}
+                    </span>
+                </div>
+                <small class="text-muted d-block mt-1">Deadline: {{ task.deadline|date('d M Y') }}</small>
+                <small class="text-muted">Assigned: {{ task.assignedTo.username }}</small>
             </div>
-        </div>
+        {% else %}
+            <p class="text-muted text-center mt-2">Aucune tâche</p>
+        {% endfor %}
     </div>
 
-    {# TERMINÉ #}
-    <div class="col-md-4">
-        <h4 class="text-center">Terminé</h4>
-        <div class="card bg-success-subtle mb-3">
-            <div class="card-body">
-                {% for task in done %}
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <strong>{{ task.title }}</strong><br>
-                            <small class="text-muted">
-                                Priorité: {{ task.priority }}
-                            </small>
-                        </div>
-                    </div>
-                {% else %}
-                    <p class="text-muted text-center">Aucune tâche</p>
-                {% endfor %}
+    {# DONE #}
+    <div class="kanban-column">
+        <h5 class="text-center mb-3">Terminé</h5>
+        {% for task in done %}
+            <div class="kanban-card">
+                <strong>{{ task.title }}</strong>
+                <div class="mt-1">
+                    <span class="badge 
+                        {% if task.priority == 'High' %}bg-danger
+                        {% elseif task.priority == 'Medium' %}bg-warning
+                        {% else %}bg-success{% endif %}">
+                        {{ task.priority }}
+                    </span>
+                </div>
+                <small class="text-muted d-block mt-1">Deadline: {{ task.deadline|date('d M Y') }}</small>
+                <small class="text-muted">Assigned: {{ task.assignedTo.username }}</small>
             </div>
-        </div>
+        {% else %}
+            <p class="text-muted text-center mt-2">Aucune tâche</p>
+        {% endfor %}
     </div>
 
 </div>
 {% endblock %}
+
