@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Task;
-use App\Entity\User;
 use App\Entity\Project;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -38,16 +37,10 @@ class TaskType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
             ])
-            ->add('assignedTo', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email',
-                'required' => false,
-            ])
             ->add('project', EntityType::class, [
                 'class' => Project::class,
                 'choice_label' => 'name',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

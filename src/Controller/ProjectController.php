@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Project;
 use App\Entity\User;
+use App\Entity\Task;
 use App\Form\AddMemberType;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
@@ -12,28 +13,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Entity\Task;
-
 
 #[Route('/project')]
 final class ProjectController extends AbstractController
 {
     #[Route('', name: 'app_project_index', methods: ['GET'])]
-public function index(ProjectRepository $projectRepository): Response
-{
-    $user = $this->getUser();
+    public function index(ProjectRepository $projectRepository): Response
+    {
+        $user = $this->getUser();
 
-    if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_DIRECTOR')) {
-        $projects = $projectRepository->findAll();
-    } else {
-        $projects = $projectRepository->findByMember($user);
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_DIRECTOR')) {
+            $projects = $projectRepository->findAll();
+        } else {
+            $projects = $projectRepository->findByUser($user);
+        }
+
+        return $this->render('project/index.html.twig', [
+            'projects' => $projects,
+        ]);
     }
-
-    return $this->render('project/index.html.twig', [
-        'projects' => $projects,
-    ]);
-}
-
 
     #[Route('/new', name: 'app_project_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -43,8 +45,10 @@ public function index(ProjectRepository $projectRepository): Response
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $project->addMember($this->getUser());
             $entityManager->persist($project);
             $entityManager->flush();
+
 
             $this->addFlash('success', 'Projet créé avec succès !');
 
@@ -58,37 +62,38 @@ public function index(ProjectRepository $projectRepository): Response
     }
 
     #[Route('/{id}', name: 'app_project_show', methods: ['GET'])]
-public function show(Project $project, EntityManagerInterface $em): Response
-{if (
-    !$this->isGranted('ROLE_ADMIN') &&
-    !$this->isGranted('ROLE_DIRECTOR') &&
-    !$project->getMembers()->contains($this->getUser())
-) {
-    throw $this->createAccessDeniedException();
-}
+    public function show(Project $project, EntityManagerInterface $em): Response
+    {
+        if (
+            !$this->isGranted('ROLE_ADMIN') &&
+            !$this->isGranted('ROLE_DIRECTOR') &&
+            !$project->getMembers()->contains($this->getUser())
+        ) {
+            throw $this->createAccessDeniedException();
+        }
 
-    $tasks = $em->getRepository(Task::class)
-        ->findBy(['project' => $project]);
+        $tasks = $em->getRepository(Task::class)->findBy([
+            'project' => $project,
+        ]);
 
-    return $this->render('project/show.html.twig', [
-        'project' => $project,
-        'tasks' => $tasks,
-    ]);
-}
-
+        return $this->render('project/show.html.twig', [
+            'project' => $project,
+            'tasks' => $tasks,
+        ]);
+    }
 
     #[Route('/{id}/edit', name: 'app_project_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Project $project, EntityManagerInterface $entityManager): Response
     {
+        if (
+            !$this->isGranted('ROLE_ADMIN') &&
+            !$project->getMembers()->contains($this->getUser())
+        ) {
+            throw $this->createAccessDeniedException();
+        }
+
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
-        if (
-    !$this->isGranted('ROLE_ADMIN') &&
-    !$project->getMembers()->contains($this->getUser())
-) {
-    throw $this->createAccessDeniedException();
-}
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
@@ -106,12 +111,13 @@ public function show(Project $project, EntityManagerInterface $em): Response
 
     #[Route('/{id}', name: 'app_project_delete', methods: ['POST'])]
     public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
-    {if (
-    !$this->isGranted('ROLE_ADMIN') &&
-    !$project->getMembers()->contains($this->getUser())
-) {
-    throw $this->createAccessDeniedException();
-}
+    {
+        if (
+            !$this->isGranted('ROLE_ADMIN') &&
+            !$project->getMembers()->contains($this->getUser())
+        ) {
+            throw $this->createAccessDeniedException();
+        }
 
         if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->request->get('_token'))) {
             $entityManager->remove($project);
@@ -125,27 +131,17 @@ public function show(Project $project, EntityManagerInterface $em): Response
 
     #[Route('/{id}/add-member', name: 'app_project_add_member', methods: ['GET', 'POST'])]
     public function addMember(Request $request, Project $project, EntityManagerInterface $em): Response
-    {$this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_DIRECTOR']);
+    {
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_DIRECTOR']);
+
         $form = $this->createForm(AddMemberType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->get('user')->getData();
 
-            
-            $exists = $em->createQueryBuilder()
-                ->select('COUNT(u.id)')
-                ->from(User::class, 'u')
-                ->innerJoin('u.projects', 'p') 
-                ->where('p.id = :projectId')
-                ->andWhere('u.id = :userId')
-                ->setParameter('projectId', $project->getId())
-                ->setParameter('userId', $user->getId())
-                ->getQuery()
-                ->getSingleScalarResult();
-
-            if ($exists == 0) {
-                $user->addProject($project); 
+            if (!$project->getMembers()->contains($user)) {
+                $project->addMember($user);
                 $em->flush();
 
                 $this->addFlash('success', 'Membre ajouté au projet !');
@@ -153,7 +149,9 @@ public function show(Project $project, EntityManagerInterface $em): Response
                 $this->addFlash('info', 'Cet utilisateur est déjà membre du projet.');
             }
 
-            return $this->redirectToRoute('app_project_show', ['id' => $project->getId()]);
+            return $this->redirectToRoute('app_project_show', [
+                'id' => $project->getId(),
+            ]);
         }
 
         return $this->render('project/add_member.html.twig', [
