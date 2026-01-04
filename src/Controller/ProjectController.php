@@ -113,11 +113,12 @@ final class ProjectController extends AbstractController
     public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
     {
         if (
-            !$this->isGranted('ROLE_ADMIN') &&
-            !$project->getMembers()->contains($this->getUser())
-        ) {
-            throw $this->createAccessDeniedException();
-        }
+    !$this->isGranted('ROLE_ADMIN') &&
+    !$this->isGranted('ROLE_DIRECTOR')
+) {
+    throw $this->createAccessDeniedException();
+}
+
 
         if ($this->isCsrfTokenValid('delete' . $project->getId(), $request->request->get('_token'))) {
             $entityManager->remove($project);
@@ -131,8 +132,13 @@ final class ProjectController extends AbstractController
 
     #[Route('/{id}/add-member', name: 'app_project_add_member', methods: ['GET', 'POST'])]
     public function addMember(Request $request, Project $project, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_DIRECTOR']);
+    { if (
+    !$this->isGranted('ROLE_ADMIN') &&
+    !$this->isGranted('ROLE_DIRECTOR')
+) {
+    throw $this->createAccessDeniedException();
+}
+
 
         $form = $this->createForm(AddMemberType::class);
         $form->handleRequest($request);
