@@ -61,14 +61,15 @@
                         <td>{{ task.description ?: '-' }}</td>
 
                         <td>
-                            {% if task.status == 'todo' %}
-                                <span class="badge bg-secondary">À faire</span>
-                            {% elseif task.status == 'doing' %}
-                                <span class="badge bg-warning text-dark">En cours</span>
-                            {% elseif task.status == 'done' %}
-                                <span class="badge bg-success">Terminé</span>
-                            {% endif %}
-                        </td>
+    {% if task.status == 'todo' %}
+        <span class="badge status-todo">À faire</span>
+    {% elseif task.status == 'doing' %}
+        <span class="badge status-doing">En cours</span>
+    {% elseif task.status == 'done' %}
+        <span class="badge status-done">Terminé</span>
+    {% endif %}
+</td>
+
 
                         <td>
                             {% if task.priority == 1 %}

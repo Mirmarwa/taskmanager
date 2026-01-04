@@ -21,7 +21,16 @@
 
 {# ===== NAVBAR ===== #}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+
     <div class="container-fluid">
+    <button class="btn btn-outline-light me-2"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#sidebarMenu">
+    ☰
+</button>
+
+
         <a class="navbar-brand" href="#">TaskManager</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -90,9 +99,13 @@
             <ul class="navbar-nav ms-auto">
                 {% if app.user %}
                     <li class="nav-item">
-                        <span class="navbar-text text-light me-3">
-                            {{ app.user.email }}
-                        </span>
+                        <span class="badge rounded-pill bg-light text-dark me-3 px-3 py-2 mt-1">
+    {{ app.user.email }}
+</span>
+
+
+
+
                     </li>
 
                     <li class="nav-item">
@@ -112,6 +125,23 @@
         </div>
     </div>
 </nav>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <ul class="list-group list-group-flush">
+
+            <a class="list-group-item" href="{{ path('app_workspace_index') }}">Workspaces</a>
+            <a class="list-group-item" href="{{ path('app_project_index') }}">Projects</a>
+            <a class="list-group-item" href="{{ path('app_task_index') }}">Tasks</a>
+            <a class="list-group-item" href="{{ path('app_task_kanban') }}">Kanban</a>
+
+        </ul>
+    </div>
+</div>
 
 
 {# ===== PAGE CONTENT ===== #}

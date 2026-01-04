@@ -3,12 +3,24 @@
 {% block title %}New Workspace{% endblock %}
 
 {% block body %}
-<h1>Create Workspace</h1>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm task-form-card">
+            <div class="card-body">
 
-{{ form_start(form) }}
-    {{ form_row(form.name) }}
-    <button class="btn btn-success">Create</button>
-{{ form_end(form) }}
+                <h2 class="mb-4 text-center text-primary">
+                    Create New Workspace
+                </h2>
 
-<a href="{{ path('app_workspace_index') }}">Back</a>
+                {{ include('workspace/_form.html.twig') }}
+
+                <a href="{{ path('app_workspace_index') }}"
+                   class="btn btn-secondary btn-lg mt-3">
+                    🔙 Back to List
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

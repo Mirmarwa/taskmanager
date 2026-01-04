@@ -361,9 +361,25 @@ body.page-loaded { opacity: 1; }
     border-radius: 999px;
 }
 
-.bg-danger { background-color: #e71506 !important; }
-.bg-warning { background-color: #ff7d03 !important; color: #212529 !important; }
-.bg-success { background-color: #007a08 !important; }
+/* =========================
+   PRIORITY (CLEAN)
+========================= */
+
+.badge.priority-high {
+    background-color: #ef4444; /* rouge propre */
+    color: #fff;
+}
+
+.badge.priority-medium {
+    background-color: #3b82f6; /* bleu */
+    color: #fff;
+}
+
+.badge.priority-low {
+    background-color: #06b6d4; /* cyan */
+    color: #fff;
+}
+
 .kanban-card {
     background: var(--card) !important;
     border-radius: 12px !important;
@@ -414,6 +430,195 @@ body.page-loaded { opacity: 1; }
 
 .btn-sm:hover {
     transform: translateY(-1px);
+}
+/* =========================
+   WORKSPACES
+========================= */
+
+/* Workspace page title */
+.workspace-title {
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+}
+
+/* Workspace card */
+.workspace-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.workspace-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+}
+
+/* Workspace name */
+.workspace-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Create workspace button (highlight) */
+.btn-create-workspace {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    border-radius: 14px;
+    font-weight: 600;
+    padding: 0.55rem 1rem;
+    box-shadow: 0 6px 18px rgba(37,99,235,0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-create-workspace:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(37,99,235,0.35);
+    color: #fff;
+}
+/* =========================
+   WORKSPACES
+========================= */
+
+/* Workspace page title */
+.workspace-title {
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+}
+
+/* Workspace card */
+.workspace-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.workspace-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+}
+
+/* Workspace name */
+.workspace-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Create workspace button (highlight) */
+.btn-create-workspace {
+    background: linear-gradient(135deg, #2563eb, #1e40af); /* même bleu que btn-primary */
+    color: #fff;
+    border-radius: 14px;
+    font-weight: 600;
+    padding: 0.55rem 1rem;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-create-workspace:hover {
+    background: linear-gradient(135deg, #1e40af, #1e3a8a);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
+    color: #fff;
+}
+/* =========================
+   TABLE HEADER BLUE (GLOBAL)
+========================= */
+/* ===== TABLE HEADER BLUE (ONLY THEAD) ===== */
+.table thead {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.table thead th {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    border-bottom: none;
+}
+/* ===== Action links (hover color only) ===== */
+.action-link {
+    font-weight: 600;
+    text-decoration: none;
+    margin-right: 10px;
+    transition: all 0.2s ease;
+}
+
+.action-link.show {
+    color: #0dcaf0;
+}
+.action-link.edit {
+    color: #ffc107;
+}
+.action-link.delete {
+    color: #dc3545;
+}
+
+/* Hover effect */
+.action-link:hover {
+    padding: 4px 10px;
+    border-radius: 8px;
+    color: #fff !important;
+}
+
+.action-link.show:hover {
+    background-color: #0dcaf0;
+}
+
+.action-link.edit:hover {
+    background-color: #ffc107;
+    color: #212529 !important;
+}
+
+.action-link.delete:hover {
+    background-color: #dc3545;
+}
+
+/* =========================
+   TASK STATUS VISIBILITY FIX
+========================= */
+
+/* Status text in tables */
+.table td .badge,
+.table td select,
+.table td {
+    color: var(--text-dark) !important;
+}
+
+/* If status is shown as badge */
+.badge.bg-light {
+    color: var(--text-dark) !important;
+}
+
+/* Select status (edit/create task) */
+select.form-select {
+    color: var(--text-dark);
+    background-color: #fff;
+}
+/* =========================
+   STATUS (CLEAN & COHERENT)
+========================= */
+
+.badge.status-todo {
+    background-color: #e5e7eb; /* gris doux */
+    color: #374151;
+}
+
+.badge.status-doing {
+    background-color: #fbbf24; /* jaune */
+    color: #78350f;
+}
+
+.badge.status-done {
+    background-color: #22c55e; /* vert */
+    color: #064e3b;
 }
 
 /* Filter form styling */
